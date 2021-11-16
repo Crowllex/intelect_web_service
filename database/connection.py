@@ -1,3 +1,5 @@
+# import MySQLdb as dbc
+# import MySQLdb.cursors
 import pymysql as dbc
 import pymysql.cursors as cursors
 import os

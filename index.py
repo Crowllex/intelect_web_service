@@ -1,10 +1,6 @@
 from flask import Flask
-from distutils.version import StrictVersion
-import platform as py
-
-if StrictVersion(py.python_version()) >= StrictVersion('3.10.0'):
-    import my
-    pymysql.install_as_MySQLdb()
+import pymysql
+pymysql.install_as_MySQLdb()
 
 app = Flask(__name__)
 
