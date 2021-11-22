@@ -10,7 +10,7 @@ class Sesion():
     def login(self):
         con = db().open
         cursor = con.cursor()
-        sql = "select p.nombres, p.apellidos, u.id_usuario, u.estado_usuario, u.correo from personal p inner join usuario u on (u.id_usuario = p.id_personal) where correo=%s and clave=%s"
+        sql = "select p.nombres, p.apellidos, u.id_usuario, u.estado_usuario, u.correo from personal p inner join usuario u on (u.id_personal = p.id_personal) where u.correo=%s and u.clave=%s"
         try:
             cursor.execute(sql, [self.email, self.password])
             data = cursor.fetchone()
