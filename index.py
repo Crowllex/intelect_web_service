@@ -5,6 +5,7 @@ from controllers.sede import route_sede
 from controllers.rubro import route_rubro
 from controllers.comprobantes import route_comprobante
 from controllers.anticipo import route_anticipo
+from controllers.evaluacionAnticipo import route_evaluacionAnticipo
 # import pymysql
 # pymysql.install_as_MySQLdb()
 
@@ -15,6 +16,7 @@ app.register_blueprint(route_sede)
 app.register_blueprint(route_rubro)
 app.register_blueprint(route_comprobante)
 app.register_blueprint(route_anticipo)
+app.register_blueprint(route_evaluacionAnticipo)
 
 
 @app.route('/welcome')
