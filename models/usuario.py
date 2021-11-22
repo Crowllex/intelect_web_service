@@ -14,15 +14,22 @@ class Usuario():
         con = db().open
         con.autocommit = False
         cursor = con.cursor()
-        sql = "insert into usuario(correo, clave, estado_usuario, token, estado_token, img, tipo_personal, id_personal) values (%s,%s,%s,%s,%s,%s,%s,%s)"
+        sql_register = "insert into usuario(correo, clave, estado_usuario, token, estado_token, img, tipo_personal, id_personal) values (%s,%s,%s,%s,%s,%s,%s,%s)"
+        sql_check = "select * from usuario where correo=%s"
         try:
-            cursor.execute(sql, [self.email, self.password,
-                           '1', self.token, '1', '', self.tipo_personal_id, self.personal_id])
-            con.commit()
-            return json.dumps({'ok': True, 'message': 'Successfully register!'})
+            cursor.execute(sql_check, [self.email])
+            user_exists = cursor.fetchone()
+            if not user_exists:
+                cursor.execute(sql_register, [self.email, self.password,
+                                              '1', self.token, '1', '', self.tipo_personal_id, self.personal_id])
+                con.commit()
+                return json.dumps({'ok': True, 'message': 'Registrado correctamente!'})
+            else:
+                return json.dumps({'ok': False, 'message': 'Usuario ya registrado!'})
+
         except con.Error as error:
             con.rollback()
-            return json.dumps({'ok': False, 'message': 'Failed to insert in the database!', 'Internal error': format(error)})
+            return json.dumps({'ok': False, 'message': 'Ocurrio un error al realizar la operacion!', 'Internal error': format(error)})
         finally:
             cursor.close()
             con.close()
