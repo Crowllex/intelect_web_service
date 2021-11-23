@@ -1,9 +1,8 @@
-# import MySQLdb as dbc
-# import MySQLdb.cursors
-import pymysql as dbc
-import pymysql.cursors as cursors
+import MySQLdb as dbc
+import MySQLdb.cursors as cursors
+# import pymysql as dbc
+# import pymysql.cursors as cursors
 import os
-
 
 class Connection():
     def __init__(self) -> None:
