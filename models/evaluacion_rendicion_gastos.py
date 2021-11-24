@@ -15,13 +15,19 @@ class Ev_rendicion_gastos():
         cursor = con.cursor()
         sql_register = "INSERT INTO evaluacion_rendicion_gastos (observacion, id_rendicion_gastos, id_usuario, id_estado_eval_rendicion) VALUES (%s,%s,%s,%s)"
         sql_check = "select * from evaluacion_rendicion_gastos where id_usuario=%s and id_rendicion_gastos=%s"
+        sql_check_user="SELECT * FROM usuario  WHERE tipo_personal=2 AND id_usuario=%s"
         try:
             cursor.execute(sql_check, [self.id_usuario,self.id_rendicion_gastos])
             erg_exists = cursor.fetchone()
             if not erg_exists:
-                cursor.execute(sql_register, [self.observacion,self.id_rendicion_gastos,self.id_usuario,self.id_estado_eval_rendicion])
-                con.commit()
-                return json.dumps({'ok': True, 'message': 'Registrado correctamente!'})
+                cursor.execute(sql_check_user, [self.id_usuario])
+                erg_exists_user = cursor.fetchone()
+                if not erg_exists_user:
+                    cursor.execute(sql_register, [self.observacion,self.id_rendicion_gastos,self.id_usuario,self.id_estado_eval_rendicion])
+                    con.commit()
+                    return json.dumps({'ok': True, 'message': 'Registrado correctamente!'})
+                else:
+                    return json.dumps({'ok': False, 'message': 'Tipo de personal no autorizado para registrar la evaluación de rendición de gastos'})
             else:
                 return json.dumps({'ok': False, 'message': 'El usuario ya registró su evaluación de rendicion de gastos'})
 

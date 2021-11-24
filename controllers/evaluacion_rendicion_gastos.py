@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models.evaluacion_rendicion_gastos import Ev_rendicion_gastos
+from middlewares.validar_token import validate_token
 import json
 
 
@@ -7,6 +8,7 @@ route_erg = Blueprint('route_erg', __name__)
 
 
 @route_erg.route('/erg/register', methods=['POST'])
+@validate_token
 def registrar_erg():
     if request.method == 'POST':
         observacion = request.form['observacion']
