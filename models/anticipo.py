@@ -76,7 +76,7 @@ class Anticipo:
         sql_docente = "SELECT a.id_anticipo, a.descripcion, a.fecha_inicio, a.fecha_fin, CONCAT(p.nombres, ' ', p.apellidos) AS docente, m.descripcion AS motivo, s.nombre AS sede, ea.descripcion AS estado FROM anticipo a INNER JOIN motivo m ON m.id_motivo = a.id_motivo INNER JOIN usuario u ON u.id_usuario = a.id_usuario INNER JOIN personal p ON p.id_personal = u.id_personal INNER JOIN sede s ON s.id_sede = a.id_sede INNER JOIN estado_anticipo ea ON ea.id_estado_anticipo = a.id_estado_anticipo WHERE a.id_usuario = %s"
         sql_personal = "select tipo_personal from usuario where id_usuario=%s"
         sql_all = "SELECT a.id_anticipo, a.descripcion, a.fecha_inicio, a.fecha_fin, CONCAT(p.nombres, ' ', p.apellidos) AS docente, m.descripcion AS motivo, s.nombre AS sede, ea.descripcion AS estado FROM anticipo a INNER JOIN motivo m ON m.id_motivo = a.id_motivo INNER JOIN usuario u ON u.id_usuario = a.id_usuario INNER JOIN personal p ON p.id_personal = u.id_personal INNER JOIN sede s ON s.id_sede = a.id_sede INNER JOIN estado_anticipo ea ON ea.id_estado_anticipo = a.id_estado_anticipo WHERE a.id_estado_anticipo = %s"
-        sql_detalle = "select sum(total) as total from detalle_anticipo where id_anticipo=%s"
+        sql_detalle = "select sum(gastos_totales) as total from detalle_anticipo where id_anticipo=%s"
         try:
             cursor.execute(sql_personal, [id_usuario])
             data_personal = cursor.fetchone()
