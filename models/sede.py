@@ -1,4 +1,4 @@
-from MySQLdb import cursors
+
 from database.connection import Connection as db
 import json
 from utils.util import CustomJsonEncoder
