@@ -1,16 +1,55 @@
-
 from database.connection import Connection as db
-import json
 from utils.util import CustomJsonEncoder
+import json
 
-class Anticipo():
-    def __init__(self,descripcion=None, fecha_inicio=None, fecha_fin=None, total=None):
+class Anticipo :
+    def __init__(self,idestado=None,descripcion=None,fechaInicio=None,fechaFin=None,
+    observacionJefatura=None,observacionAdministrativa=None,idUsuario=None,
+    idMotivo=None,idSede=None,rubros=None):
+
+        self.idestado = idestado
         self.descripcion = descripcion
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
-        self.total = total
+        self.fechaInicio = fechaInicio
+        self.fechaFin = fechaFin
+        self.observacionJefatura =observacionJefatura
+        self.observacionAdministrativa = observacionAdministrativa
+        self.idUsuario = idUsuario
+        self.idMotivo = idMotivo
+        self.idSede = idSede
+        self.rubros =rubros
+
+    def registrarAnticipo(self):
+        conexion = db().open
+        conexion.autocommit = False
+        cursor = conexion.cursor()
+        sqlAnticipo = "INSERT INTO anticipo (id_estado_anticipo,descripcion,fecha_inicio,fecha_fin,observacion_jefatura,observacion_administrativa,id_usuario,id_motivo,id_sede)VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+
+        try:
+            cursor.execute(sqlAnticipo,[self.idestado,self.descripcion,self.fechaInicio,
+                                self.fechaFin,self.observacionJefatura,
+                                self.observacionAdministrativa,self.idUsuario,
+                                self.idMotivo,self.idSede])
+
+            idAnticipo = conexion.insert_id()
+            jsonArrayRubros = json.loads(self.rubros)
+
+            for rubro in jsonArrayRubros:
+                sqlDetalleAnticipo ="INSERT INTO detalle_anticipo (id_rubro,id_anticipo,gastos_totales) VALUES (%s,%s,%s)"
+                idRubro = rubro["id_rubro"]
+                cantidad_total = rubro["cantidad_total"]
+                cursor.execute(sqlDetalleAnticipo,[idRubro,idAnticipo,cantidad_total])
         
-    def listarAnticipoPendientePorDocente(self,id_personal):
+            conexion.commit()
+            return json.dumps({'status':True,'data':'Anticipo registrado correctamente'})
+
+        except conexion.Error as e:
+            conexion.rollback()
+            return json.dumps({'status':False, 'data':format(e)},cls=CustomJsonEncoder)
+        finally:
+            cursor.close()
+            conexion.close()
+            
+     def listarAnticipoPendientePorDocente(self,id_personal):
         con = db().open
         
         cursor = con.cursor()
@@ -28,5 +67,3 @@ class Anticipo():
             return json.dumps({'status': True, 'data': datos}, cls=CustomJsonEncoder)
         else:
             return json.dumps({'status': False, 'data': 'No hay registros'})
-
-        
