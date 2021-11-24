@@ -4,6 +4,8 @@ from controllers.sesion import route_sesion
 from controllers.sede import route_sede
 from controllers.rubro import route_rubro
 from controllers.comprobantes import route_comprobante
+from controllers.rendicion_gastos import route_rg
+from controllers.evaluacion_rendicion_gastos import route_erg
 import pymysql
 pymysql.install_as_MySQLdb()
 
@@ -13,7 +15,8 @@ app.register_blueprint(route_sesion)
 app.register_blueprint(route_sede)
 app.register_blueprint(route_rubro)
 app.register_blueprint(route_comprobante)
-
+app.register_blueprint(route_rg)
+app.register_blueprint(route_erg)
 
 @app.route('/welcome')
 def home():
