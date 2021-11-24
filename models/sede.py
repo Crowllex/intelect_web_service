@@ -2,6 +2,7 @@ from database.connection import Connection as db
 import json
 from utils.util import CustomJsonEncoder
 
+
 class Sede():
     def __init__(self, id_sede=None, nombre=None):
         self.id_sede = id_sede
@@ -9,7 +10,7 @@ class Sede():
 
     def listarSede(self):
         con = db().open
-        
+
         cursor = con.cursor()
 
         sql = "SELECT * FROM sede"
@@ -25,5 +26,3 @@ class Sede():
             return json.dumps({'status': True, 'data': datos}, cls=CustomJsonEncoder)
         else:
             return json.dumps({'status': False, 'data': 'No hay registros'})
-
-        

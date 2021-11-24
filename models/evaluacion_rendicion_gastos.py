@@ -1,13 +1,14 @@
 from database.connection import Connection as db
 import json
+
+
 class Ev_rendicion_gastos():
-    def __init__(self, observacion=None,id_rendicion_gastos=None, id_usuario=None, id_estado_eval_rendicion=None) -> None:
-        
+    def __init__(self, observacion=None, id_rendicion_gastos=None, id_usuario=None, id_estado_eval_rendicion=None) -> None:
+
         self.observacion = observacion
         self.id_rendicion_gastos = id_rendicion_gastos
-        self.id_usuario= id_usuario
+        self.id_usuario = id_usuario
         self.id_estado_eval_rendicion = id_estado_eval_rendicion
-        
 
     def insertar(self):
         con = db().open
@@ -19,9 +20,10 @@ class Ev_rendicion_gastos():
         sql_tpersonal="SELECT tipo_personal from usuario WHERE id_usuario=%s"
         sql_update1="UPDATE rendicion_gastos  SET observacion_jefatura=1 WHERE id_rendicion_gastos=%s;"
         sql_update2="UPDATE rendicion_gastos  SET observacion_administrativa=1 WHERE id_rendicion_gastos=%s;"
-
+        
         try:
-            cursor.execute(sql_check, [self.id_usuario,self.id_rendicion_gastos])
+            cursor.execute(
+                sql_check, [self.id_usuario, self.id_rendicion_gastos])
             erg_exists = cursor.fetchone()
             if not erg_exists:
                 cursor.execute(sql_check_user, [self.id_usuario])
