@@ -31,7 +31,23 @@ class EvaluacionAnticipo:
             cursor.execute(sqlEstadoAnticipo,[estado['descripcion']])
             idEstadoAnticipo = cursor.fetchone()
 
-            sqlUpdateAnticipo = "UPDATE anticipo SET id_estado_anticipo =%s WHERE id_anticipo = %s"
+            sqlObtenerTipoUsuario = "SELECT u.tipo_personal FROM usuario AS u INNER JOIN tipo_personal AS tp ON u.tipo_personal=tp.id_tipoPersonal WHERE u.id_usuario = %s"
+            cursor.execute(sqlObtenerTipoUsuario,[self.idUsuario])
+            tipoUsuario = cursor.fetchone()
+
+            sqlObsJef = "SELECT observacion_jefatura FROM anticipo WHERE id_anticipo = %s"
+            cursor.execute(sqlObsJef,[self.idAnticipo])
+            obsJefatura = cursor.fetchone()
+            
+            if tipoUsuario["tipo_personal"] == 1:
+                sqlUpdateAnticipo = "UPDATE anticipo SET id_estado_anticipo =%s observacion_jefatura=1 observacion_administrativa =%s WHERE id_anticipo = %s"
+            
+            if tipoUsuario["tipo_personal"] == 3 and obsJefatura["observacion_jefatura"]== 1:
+                sqlUpdateAnticipo = "UPDATE anticipo SET id_estado_anticipo =%s observacion_administrativa =1 WHERE id_anticipo = %s"
+            else:
+                conexion.rollback()
+                return json.dumps({'status': False, 'data':'Este anticipo debe ser observado primero por la jefatura'})
+
             cursor.execute(sqlUpdateAnticipo,[idEstadoAnticipo['estado'],self.idAnticipo])
 
             conexion.commit()
