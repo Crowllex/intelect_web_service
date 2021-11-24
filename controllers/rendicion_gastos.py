@@ -18,3 +18,13 @@ def registrar_rg():
         rpta_json = obj_rg.insertar()
         data_rg = json.loads(rpta_json)
         return jsonify(data_rg), 200
+
+
+@route_rg.route('/rendicion/listar', methods=['POST'])
+@validate_token
+def listar():
+    if request.method == 'POST':
+        objProd = Rendicion_gastos()
+        rptaJson = objProd.listarRendicion()
+        datos_rendicion = json.loads(rptaJson)
+        return jsonify(datos_rendicion), 200
