@@ -21,12 +21,11 @@ class Rendicion_gastos():
         sql_check = "select * from rendicion_gastos where numero_informe=%s"
         try:
             cursor.execute(sql_variable, [self.id_anticipo])
-            numero_informe = cursor.fetchall()
-            cursor.execute(sql_check, [numero_informe[0]['numero_informe']])
+            numero_informe = cursor.fetchone()
+            cursor.execute(sql_check, [numero_informe['numero_informe']])
             ni_exists = cursor.fetchone()
             if not ni_exists:
-                cursor.execute(sql_register, [numero_informe[0]['numero_informe'], self.id_estado_rendicion,
-                               self.id_anticipo, self.observacion_jefatura, self.observacion_administrativa])
+                cursor.execute(sql_register, [numero_informe['numero_informe'],self.id_estado_rendicion,self.id_anticipo,self.observacion_jefatura,self.observacion_administrativa])
                 con.commit()
                 return json.dumps({'ok': True, 'message': 'Registrado correctamente!'})
             else:
