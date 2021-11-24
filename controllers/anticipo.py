@@ -29,3 +29,13 @@ def registrarAnticipo():
                                 )
         rptaJson = json.loads(objAnticipo.registrarAnticipo())
         return jsonify(rptaJson),200
+
+@route_anticipo.route('/anticipo/listarAnticipoPendientePorDocente', methods=['POST'])
+@validate_token
+def listar():
+    if request.method == 'POST':
+        id_personal = request.form['id_personal']
+        objProd = Anticipo()
+        rptaJson = objProd.listarAnticipoPendientePorDocente(id_personal)
+        datos_anticipo = json.loads(rptaJson) 
+        return jsonify(datos_anticipo), 200

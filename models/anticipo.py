@@ -25,19 +25,14 @@ class Anticipo :
         sqlAnticipo = "INSERT INTO anticipo (id_estado_anticipo,descripcion,fecha_inicio,fecha_fin,observacion_jefatura,observacion_administrativa,id_usuario,id_motivo,id_sede)VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
         try:
-            #ejecutamos el insert en la tabla anticipo
             cursor.execute(sqlAnticipo,[self.idestado,self.descripcion,self.fechaInicio,
                                 self.fechaFin,self.observacionJefatura,
                                 self.observacionAdministrativa,self.idUsuario,
                                 self.idMotivo,self.idSede])
-            #guardo el id del anticipo para el detalle
-            idAnticipo = conexion.insert_id()
 
-            #los rubros seleccionados y su calculo por dia se obtendran de la app al momento de registrar
-            #y vendran como un json ejemplo [{"id_rubro":9,"cantidad_total":10},{"id_rubro":10,"cantidad_total":20}]
+            idAnticipo = conexion.insert_id()
             jsonArrayRubros = json.loads(self.rubros)
 
-            #se inserta en el detalle de anticipo
             for rubro in jsonArrayRubros:
                 sqlDetalleAnticipo ="INSERT INTO detalle_anticipo (id_rubro,id_anticipo,gastos_totales) VALUES (%s,%s,%s)"
                 idRubro = rubro["id_rubro"]
@@ -53,3 +48,22 @@ class Anticipo :
         finally:
             cursor.close()
             conexion.close()
+            
+     def listarAnticipoPendientePorDocente(self,id_personal):
+        con = db().open
+        
+        cursor = con.cursor()
+
+        sql = "SELECT a.descripcion, a.fecha_inicio, a.fecha_fin, da.total FROM anticipo a INNER JOIN detalle_anticipo da ON da.id_anticipo=a.id_anticipo inner join usuario u ON u.id_usuario=a.id_usuario WHERE (a.id_estado_anticipo= 1 OR a.id_estado_anticipo= 2 OR a.id_estado_anticipo= 3) AND u.id_personal=%s"
+
+        cursor.execute(sql,[id_personal])
+
+        datos = cursor.fetchall()
+
+        cursor.close()
+        con.close()
+
+        if datos: 
+            return json.dumps({'status': True, 'data': datos}, cls=CustomJsonEncoder)
+        else:
+            return json.dumps({'status': False, 'data': 'No hay registros'})
