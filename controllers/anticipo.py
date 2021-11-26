@@ -49,7 +49,7 @@ def listar_anticipos():
     try:
         if request.method == 'POST':
             id_usuario = request.form['id_usuario']
-            obj_anticipo = Anticipo()
+            obj_anticipo = Anticipo(idestado=1)
             rpta_json = obj_anticipo.listar(id_usuario)
             data_anticipo = json.loads(rpta_json)
             return jsonify(data_anticipo), 200
