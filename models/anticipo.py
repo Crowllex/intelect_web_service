@@ -87,7 +87,7 @@ class Anticipo:
                 cursor.execute(sql_docente, [id_usuario])
                 data = cursor.fetchall()
             else:
-                cursor.execute(sql_all, [self.id_estado_anticipo])
+                cursor.execute(sql_all, [self.idestado])
                 data = cursor.fetchall()
 
             for detalle_data in data:
