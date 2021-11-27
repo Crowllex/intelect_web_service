@@ -6,11 +6,12 @@ import json
 
 route_sede = Blueprint('route_sede', __name__)
 
+
 @route_sede.route('/sede/listar', methods=['POST'])
-@validate_token 
+@validate_token
 def listar():
     if request.method == 'POST':
         objProd = Sede()
         rptaJson = objProd.listarSede()
         datos_sede = json.loads(rptaJson)
-        return jsonify(datos_sede), 200 
+        return jsonify(datos_sede), 200

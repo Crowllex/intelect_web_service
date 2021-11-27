@@ -3,17 +3,17 @@ import json
 from utils.util import CustomJsonEncoder
 
 
-class Sede():
-    def __init__(self, id_sede=None, nombre=None):
-        self.id_sede = id_sede
-        self.nombre = nombre
+class Motivo():
+    def __init__(self, id_motivo=None, descripcion=None):
+        self.id_motivo = id_motivo
+        self.descripcion = descripcion
 
-    def listarSede(self):
+    def listarMotivo(self):
         con = db().open
 
         cursor = con.cursor()
 
-        sql = "SELECT * FROM sede"
+        sql = "SELECT M.id_motivo, M.descripcion FROM motivo M "
 
         cursor.execute(sql)
 
