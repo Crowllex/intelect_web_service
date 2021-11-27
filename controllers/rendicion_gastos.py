@@ -14,7 +14,9 @@ def registrar_rg():
     if request.method == 'POST':
         id_estado_rendicion = request.form['id_estado_rendicion']
         id_anticipo = request.form['id_anticipo']
-        obj_rg = Rendicion_gastos(id_estado_rendicion, id_anticipo)
+        comprobantes = request.form['comprobantes']
+        obj_rg = Rendicion_gastos(
+            id_estado_rendicion, id_anticipo, comprobantes)
         rpta_json = obj_rg.insertar()
         data_rg = json.loads(rpta_json)
         return jsonify(data_rg), 200
