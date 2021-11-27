@@ -27,12 +27,7 @@ class Rendicion_gastos():
             cursor.execute(sql_check, [numero_informe['numero_informe']])
             ni_exists = cursor.fetchone()
             sql_series = "select numero_serie from comprobante"
-            cursor.execute(sql_series)
-            values = cursor.fetchall()
-            if values:
-                last_serie = values.pop()
-            else:
-                last_serie = {'numero_serie': 0}
+
             jsonArrayComprobantes = json.loads(self.comprobantes)
             cursor.execute(sql_register, [numero_informe['numero_informe'], self.id_estado_rendicion,
                                           self.id_anticipo, self.observacion_jefatura, self.observacion_administrativa])
@@ -40,11 +35,16 @@ class Rendicion_gastos():
 
             if not ni_exists:
                 for comprobante in jsonArrayComprobantes:
+                    cursor.execute(sql_series)
+                    values = cursor.fetchall()
+                    if values:
+                        last_serie = values.pop()
+                    else:
+                        last_serie = {'numero_serie': 0}
                     sql_comprobante = "insert into comprobante (numero_serie,numero_correlativo,fecha_emision,monto_total,descripcion,id_rubro,id_tipo_comprobante,ruc) values (%s,%s,%s,%s,%s,%s,%s,%s)"
-                    cursor.execute(sql_comprobante, [last_serie['numero_serie'], comprobante['numero_correlativo'], comprobante['fecha_emision'],
+                    cursor.execute(sql_comprobante, [int(last_serie['numero_serie'])+1, comprobante['numero_correlativo'], comprobante['fecha_emision'],
                                    comprobante['monto_total'], comprobante['descripcion'], comprobante['id_rubro'], comprobante['id_tipo_comprobante'], comprobante['ruc']])
                     comprobante_id = con.insert_id()
-
                     cursor.execute(sql_detalle, [rendicion_id, comprobante_id])
 
                 con.commit()
