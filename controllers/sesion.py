@@ -16,8 +16,8 @@ def auth_login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        hash_password = MD5Hash.md5_password(password)
-        obj_session = Sesion(email, hash_password)
+        # hash_password = MD5Hash.md5_password(password)
+        obj_session = Sesion(email, password)
         rpta_json = obj_session.login()
         sesion_data = json.loads(rpta_json)
         if sesion_data['ok'] == True:

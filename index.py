@@ -9,6 +9,7 @@ from controllers.anticipo import route_anticipo
 from controllers.evaluacionAnticipo import route_evaluacionAnticipo
 from controllers.rendicion_gastos import route_rg
 from controllers.evaluacion_rendicion_gastos import route_erg
+from controllers.tipo_comprobante import route_tipo_comprobante
 import pymysql
 pymysql.install_as_MySQLdb()
 
@@ -24,6 +25,7 @@ app.register_blueprint(route_anticipo)
 app.register_blueprint(route_evaluacionAnticipo)
 app.register_blueprint(route_rg)
 app.register_blueprint(route_erg)
+app.register_blueprint(route_tipo_comprobante)
 
 
 @app.route('/welcome')

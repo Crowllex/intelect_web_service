@@ -1,5 +1,6 @@
 from database.connection import Connection as db
 from utils.util import CustomJsonEncoder
+from utils.days_beetwen import days_between
 import json
 
 
@@ -24,7 +25,6 @@ class Anticipo:
         conexion.autocommit = False
         cursor = conexion.cursor()
         sqlAnticipo = "INSERT INTO anticipo (id_estado_anticipo,descripcion,fecha_inicio,fecha_fin,observacion_jefatura,observacion_administrativa,id_usuario,id_motivo,id_sede)VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-
         try:
             cursor.execute(sqlAnticipo, [self.idestado, self.descripcion, self.fechaInicio,
                                          self.fechaFin, self.observacionJefatura,
@@ -38,8 +38,17 @@ class Anticipo:
                 sqlDetalleAnticipo = "INSERT INTO detalle_anticipo (id_rubro,id_anticipo,gastos_totales) VALUES (%s,%s,%s)"
                 idRubro = rubro["id_rubro"]
                 cantidad_total = rubro["cantidad_total"]
+                sqlCalculo = "SELECT calculoxdia FROM rubro WHERE id_rubro = %s"
+                cursor.execute(sqlCalculo, idRubro)
+                calculoxdia = cursor.fetchone()
+                if calculoxdia['calculoxdia'] == "SI":
+                    cantidadFinal = cantidad_total * \
+                        (days_between(self.fechaInicio, self.fechaFin)+1)
+                else:
+                    cantidadFinal = cantidad_total
+
                 cursor.execute(sqlDetalleAnticipo, [
-                               idRubro, idAnticipo, cantidad_total])
+                               idRubro, idAnticipo, cantidadFinal])
 
             conexion.commit()
             return json.dumps({'status': True, 'data': 'Anticipo registrado correctamente'})

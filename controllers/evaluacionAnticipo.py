@@ -11,14 +11,11 @@ route_evaluacionAnticipo = Blueprint('ws_evalAnticipo', __name__)
 def eval_anticipo():
     if request.method == 'POST':
         observacion = request.form['observacion']
-        fecha = request.form['fecha']
-        hora = request.form['hora']
         idEstado = request.form['idEstado']
         idUsuario = request.form['idUsuario']
         idAnticipo = request.form['idAnticipo']
 
-        objEvaluacion = EvaluacionAnticipo(observacion=observacion, fecha=fecha,
-                                           hora=hora, idEstadoEvalAnticipo=idEstado,
+        objEvaluacion = EvaluacionAnticipo(observacion=observacion, idEstadoEvalAnticipo=idEstado,
                                            idUsuario=idUsuario, idAnticipo=idAnticipo)
         rptaJson = json.loads(objEvaluacion.registrarEvaluacionAnticipo())
         return jsonify(rptaJson), 200
@@ -30,8 +27,9 @@ def listar_evaluacion_anticipos():
     try:
         if request.method == 'POST':
             id_usuario = request.form['id_usuario']
+            id_anticipo = request.form['id_anticipo']
             obj_anticipo = EvaluacionAnticipo()
-            rpta_json = obj_anticipo.listar(id_usuario)
+            rpta_json = obj_anticipo.listar(id_usuario, id_anticipo)
             data_anticipo = json.loads(rpta_json)
             return jsonify(data_anticipo), 200
     except ValueError as e:
