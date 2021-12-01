@@ -9,8 +9,10 @@ from controllers.anticipo import route_anticipo
 from controllers.evaluacionAnticipo import route_evaluacionAnticipo
 from controllers.rendicion_gastos import route_rg
 from controllers.evaluacion_rendicion_gastos import route_erg
-import pymysql
-pymysql.install_as_MySQLdb()
+from controllers.detalle_anticipo import route_detalleAnt
+
+# import pymysql
+# pymysql.install_as_MySQLdb()
 
 
 app = Flask(__name__)
@@ -24,6 +26,7 @@ app.register_blueprint(route_anticipo)
 app.register_blueprint(route_evaluacionAnticipo)
 app.register_blueprint(route_rg)
 app.register_blueprint(route_erg)
+app.register_blueprint(route_detalleAnt)
 
 
 @app.route('/welcome')
