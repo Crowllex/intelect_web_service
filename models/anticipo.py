@@ -33,7 +33,6 @@ class Anticipo:
 
             idAnticipo = conexion.insert_id()
             jsonArrayRubros = json.loads(self.rubros)
-
             for rubro in jsonArrayRubros:
                 sqlDetalleAnticipo = "INSERT INTO detalle_anticipo (id_rubro,id_anticipo,gastos_totales) VALUES (%s,%s,%s)"
                 idRubro = rubro["id_rubro"]
@@ -84,7 +83,8 @@ class Anticipo:
         cursor = con.cursor()
         sql_docente = "SELECT a.id_anticipo, a.descripcion, a.fecha_inicio, a.fecha_fin, CONCAT(p.nombres, ' ', p.apellidos) AS docente, m.descripcion AS motivo, s.nombre AS sede, ea.descripcion AS estado FROM anticipo a INNER JOIN motivo m ON m.id_motivo = a.id_motivo INNER JOIN usuario u ON u.id_usuario = a.id_usuario INNER JOIN personal p ON p.id_personal = u.id_personal INNER JOIN sede s ON s.id_sede = a.id_sede INNER JOIN estado_anticipo ea ON ea.id_estado_anticipo = a.id_estado_anticipo WHERE a.id_usuario = %s"
         sql_personal = "select tipo_personal from usuario where id_usuario=%s"
-        sql_all = "SELECT a.id_anticipo, a.descripcion, a.fecha_inicio, a.fecha_fin, CONCAT(p.nombres, ' ', p.apellidos) AS docente, m.descripcion AS motivo, s.nombre AS sede, ea.descripcion AS estado FROM anticipo a INNER JOIN motivo m ON m.id_motivo = a.id_motivo INNER JOIN usuario u ON u.id_usuario = a.id_usuario INNER JOIN personal p ON p.id_personal = u.id_personal INNER JOIN sede s ON s.id_sede = a.id_sede INNER JOIN estado_anticipo ea ON ea.id_estado_anticipo = a.id_estado_anticipo WHERE a.id_estado_anticipo = %s"
+        sql_jefe = "SELECT a.id_anticipo, a.descripcion, a.fecha_inicio, a.fecha_fin, CONCAT(p.nombres, ' ', p.apellidos) AS docente, m.descripcion AS motivo, s.nombre AS sede, ea.descripcion AS estado FROM anticipo a INNER JOIN motivo m ON m.id_motivo = a.id_motivo INNER JOIN usuario u ON u.id_usuario = a.id_usuario INNER JOIN personal p ON p.id_personal = u.id_personal INNER JOIN sede s ON s.id_sede = a.id_sede INNER JOIN estado_anticipo ea ON ea.id_estado_anticipo = a.id_estado_anticipo WHERE a.id_estado_anticipo = %s"
+        sql_admin = "SELECT a.id_anticipo, a.descripcion, a.fecha_inicio, a.fecha_fin, CONCAT(p.nombres, ' ', p.apellidos) AS docente, m.descripcion AS motivo, s.nombre AS sede, ea.descripcion AS estado FROM anticipo a INNER JOIN motivo m ON m.id_motivo = a.id_motivo INNER JOIN usuario u ON u.id_usuario = a.id_usuario INNER JOIN personal p ON p.id_personal = u.id_personal INNER JOIN sede s ON s.id_sede = a.id_sede INNER JOIN estado_anticipo ea ON ea.id_estado_anticipo = a.id_estado_anticipo WHERE a.observacion_jefatura = 1 AND a.observacion_administrativa = 0"
         sql_detalle = "select sum(gastos_totales) as total from detalle_anticipo where id_anticipo=%s"
         try:
             cursor.execute(sql_personal, [id_usuario])
@@ -95,8 +95,11 @@ class Anticipo:
             if data_personal['tipo_personal'] == 2:
                 cursor.execute(sql_docente, [id_usuario])
                 data = cursor.fetchall()
+            elif data_personal['tipo_personal'] == 1:
+                cursor.execute(sql_jefe, [self.idestado])
+                data = cursor.fetchall()
             else:
-                cursor.execute(sql_all, [self.idestado])
+                cursor.execute(sql_admin)
                 data = cursor.fetchall()
 
             for detalle_data in data:

@@ -50,11 +50,12 @@ class EvaluacionAnticipo:
 
                 else:
                     conexion.rollback()
-                    return json.dumps({'status': False, 'data': 'Este anticipo debe ser observado primero por la jefatura'})
+                    return json.dumps({'status': True, 'data': 'Este anticipo debe ser observado primero por la jefatura'})
 
                 cursor.execute(sqlUpdateAnticipo, [
                     idEstadoAnticipo['estado'], self.idAnticipo])
                 conexion.commit()
+                return json.dumps({'status': True, 'data': 'Evaluacion registrada correctamente!'})
             else:
                 return json.dumps({'status': True, 'data': 'Evaluacion de anticipo ya registrada!'})
         except conexion.Error as e:
@@ -67,7 +68,7 @@ class EvaluacionAnticipo:
     def listar(self, id_usuario, id_anticipo):
         con = db().open
         cursor = con.cursor()
-        sql_evaluaciones = "SELECT e.id_evaluacion, e.observacion, e.fecha_registro,ee.descripcion AS estado, CONCAT(p.nombres,' ',p.apellidos) AS personal , a.descripcion AS anticipo, m.descripcion AS motio, s.nombre AS sede FROM evaluacion e INNER JOIN anticipo a ON a.id_anticipo = e.id_anticipo INNER JOIN estado_evaluacion ee ON ee.id_estado_eval_anticipo = e.id_estado_eval_anticipo INNER JOIN usuario u ON u.id_usuario = e.id_usuario INNER JOIN personal p ON p.id_personal = u.id_personal INNER JOIN motivo m ON m.id_motivo = a.id_motivo INNER JOIN sede s ON s.id_sede = a.id_sede WHERE a.id_usuario = %s AND a.id_anticipo = %s"
+        sql_evaluaciones = "SELECT e.id_evaluacion, e.observacion, e.fecha_registro,ee.descripcion AS estado, CONCAT(p.nombres,' ',p.apellidos) AS personal,tp.descripcion as tipo_personal , a.descripcion AS anticipo, m.descripcion AS motivo, s.nombre AS sede FROM evaluacion e INNER JOIN anticipo a ON a.id_anticipo = e.id_anticipo INNER JOIN estado_evaluacion ee ON ee.id_estado_eval_anticipo = e.id_estado_eval_anticipo INNER JOIN usuario u ON u.id_usuario = e.id_usuario INNER JOIN personal p ON p.id_personal = u.id_personal INNER JOIN tipo_personal tp on tp.id_tipoPersonal = p.tipo_personal INNER JOIN motivo m ON m.id_motivo = a.id_motivo INNER JOIN sede s ON s.id_sede = a.id_sede WHERE a.id_usuario = %s AND a.id_anticipo = %s"
         try:
             cursor.execute(sql_evaluaciones, [id_usuario, id_anticipo])
             data = cursor.fetchall()

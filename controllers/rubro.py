@@ -15,3 +15,14 @@ def listar():
         rptaJson = objProd.listarRubro()
         datos_rubro = json.loads(rptaJson)
         return jsonify(datos_rubro), 200
+
+
+@route_rubro.route('/rubro_x_sede/listar', methods=['POST'])
+@validate_token
+def filtrar():
+    if request.method == 'POST':
+        sede = request.form['sede']
+        objProd = Rubro()
+        rptaJson = objProd.listar_rubro_sede(sede)
+        datos_rubro = json.loads(rptaJson)
+        return jsonify(datos_rubro), 200

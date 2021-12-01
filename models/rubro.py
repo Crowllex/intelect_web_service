@@ -29,3 +29,22 @@ class Rubro():
             return json.dumps({'status': True, 'data': datos}, cls=CustomJsonEncoder)
         else:
             return json.dumps({'status': False, 'data': 'No hay registros'})
+
+    def listar_rubro_sede(self, sede):
+        con = db().open
+
+        cursor = con.cursor()
+
+        sql = "SELECT R.id_rubro, R.nombre AS descripcion, R.monto, R.calculoxdia, S.nombre AS sede FROM rubro R INNER JOIN sede S ON R.id_sede = S.id_sede WHERE S.nombre = %s"
+
+        cursor.execute(sql, [sede])
+
+        datos = cursor.fetchall()
+
+        cursor.close()
+        con.close()
+
+        if datos:
+            return json.dumps({'status': True, 'data': datos}, cls=CustomJsonEncoder)
+        else:
+            return json.dumps({'status': False, 'data': 'No hay registros'})
